@@ -1,12 +1,10 @@
 @(jobs: List[indexing.Job])
 
-@import scala.util.parsing.json._
-
 @main("Job Platfone") {
 
-	<hr class="featurette-divider">
+	<h1>Job Platfone</h1>
 
-	<form class="form-wrapper cf" action="/search" method="get">
+	<form class="form-wrapper cf" action="/search" method="get" style="margin-top: 40px;">
 		<input id="who" name="who" type="text" placeholder="Who : company">
 		<input id="what" name="what" type="text" placeholder="What : content">
 		<input id="where" name="where" type="text" placeholder="Where : place">
@@ -14,71 +12,120 @@
 		<button type="submit">Search</button>
 	</form>
 
-	<hr class="featurette-divider">
-	
-	<h1>Job Platfone</h1>
-
 	<div id="job-info">
-	
+
 		@for(job <- jobs) {
+
 			<!-- Making content for Who -->
-			<div class="row">
-				<p><div class="label label-info">@job.jobs.getWhat().getTitle()</div></p>
-			</div>
-			<div class='row'>
-				<div class='col-md-1'></div>
-				<div class='col-md-1'><p class='label label-warning'> Who </p></div>
-				<div class='col-md-2'><p>@job.jobs.getWho().getCompany()</p></div>
-				<div class='col-md-4'>
-					<div class='row'>
-						<p><a href="@job.jobs.getWho().getUrl()" class="label label-primary">detail</a></p>
+			<div class="site-wrapper">
+				<div class="site-wrapper-inner">
+					<div class="cover-container">
+						<div class="inner cover">
+
+							<div class='row page-header'>
+								<h3 class="masthead-brand">
+									<a href="@job.jobs.getWho().getUrl()" class="cover-heading">
+										@job.jobs.getWhat().getTitle()
+									</a>
+								</h3>
+							</div>
+
+							<div class='row'>
+								<!-- Making content for Who -->
+								<div class='col-md-3'>
+									<div class='row'>
+										<p class='label label-warning'> Who </p>
+									</div>
+									<div class='row'>
+										<h4>@job.jobs.getWho().getCompany()</h4>
+									</div>
+									<div class='row'>
+										<p>
+											@{
+												val str = job.jobs.getWho().getDescription()
+												val len = str.length
+												if (len > 80) {
+													str.substring(0, 80) + "..."
+												} else {
+													str
+												}
+											}
+										</p>
+									</div>
+								</div>
+
+								<div class='col-md-1'>
+								</div>
+
+								<!-- Making content for What -->
+								<div class='col-md-4'>
+									<div class='row'>
+										<div class='row'>
+											<p class='label label-warning'> What </p>
+										</div>
+										<div class='row'>
+											<p class='pull-left label label-default'> Description </p>
+										</div>
+										<div class='row'>
+											<p>
+												@{
+													val str = job.jobs.getWhat().getDescription()
+													val len = str.length
+													if (len > 80) {
+														str.substring(0, 80) + "..."
+													} else {
+														str
+													}
+												}
+											</p>
+										</div>
+										<div class='row'>
+											<p class='pull-left label label-default'> Content </p>
+										</div>
+										<div class='row'>
+											<p>
+												@{
+													val str = job.jobs.getWhat().getContent()
+													val len = str.length
+													if (len > 80) {
+														str.substring(0, 80) + "..."
+													} else {
+														str
+													}
+												}
+											</p>
+										</div>
+									</div>
+								</div>
+
+								<div class='col-md-1'>
+								</div>
+
+								<!-- Making content for Where -->
+								<div class='col-md-3'>
+									<div class='row'>
+										<p class='label label-warning'> Where </p>
+									</div>
+									<div class='row'>
+										<p>
+											@{
+												job.jobs.getWhere().getCity() + ", " + 
+												job.jobs.getWhere().getState()
+											}
+										</p>
+										<p>@job.jobs.getWhere().getCountry()</p>
+									</div>
+
+									<!-- Making content for When -->
+									<p class='label label-danger'>@job.jobs.getTimestamp()</p>
+								</div>
+							</div>
+
+						</div>
 					</div>
 				</div>
-				<div class='col-md-4'></div>
 			</div>
-			<div class='row'>
-				<div class='col-md-2'></div>
-				<div class='col-md-10'><p>@job.jobs.getWho().getDescription()</p></div>
-			</div>
-			
-			<!-- Making content for What --> 
-			<div class='row'>
-				<div class='col-md-1'></div>
-				<div class='col-md-1'><p class='label label-warning'> What </p></div>
-				<div class='col-md-2'>
-					<p class='label label-default'> Title </p>
-					<p>@job.jobs.getWhat().getTitle()</p>
-				</div>
-				<div class='col-md-3'>
-					<p class='label label-default'> Description </p>
-					<p>@job.jobs.getWhat().getDescription()</p>
-				</div>
-				<div class='col-md-4'>
-					<p class='label label-default'> Content </p>
-					<p>@job.jobs.getWhat().getContent()</p>
-				</div>
-			</div>
-			
-			<!-- Making content for Where -->
-			<div class='row'>
-				<div class='col-md-1'></div>
-				<div class='col-md-1'><p class='label label-warning'> Where </p></div>
-				<div class='col-md-2'><p>@job.jobs.getWhere().getCity()</p></div>
-				<div class='col-md-4'><p>@job.jobs.getWhere().getState()</p></div>
-				<div class='col-md-4'><p>@job.jobs.getWhere().getCountry()</p></div>
-			</div>
-			
-			<!-- Making content for When -->
-			<div class='row'>
-				<div class='col-md-2'></div>
-				<div class='col-md-4'>
-					<div class='row'>
-						<p class='label label-warning'>@job.jobs.getTimestamp()</p>
-					</div>
-				</div>
-				<div class='col-md-3'></div>
-				<div class='col-md-3'></div>
-			</div>
+
 		}
 	</div>
 

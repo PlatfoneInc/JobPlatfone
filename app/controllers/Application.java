@@ -8,21 +8,15 @@ import java.util.List;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import play.Logger;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.cleverage.elasticsearch.IndexQuery;
 import com.github.cleverage.elasticsearch.IndexQueryPath;
 import com.github.cleverage.elasticsearch.IndexResults;
 import com.github.cleverage.elasticsearch.IndexService;
-import com.google.gson.Gson;
 
 public class Application extends Controller {
 
