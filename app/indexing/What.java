@@ -10,18 +10,16 @@ public class What extends models.What implements Indexable {
 	public What() {
 	}
 
-	public What(String title, String description, String schedule,
-			String content) {
-		super(title, description, schedule, content);
+	public What(String title, String content, String url) {
+		super(title, content, url);
 	}
 
 	@Override
 	public Map<String, Object> toIndex() {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("title", title);
-		map.put("description", description);
-		map.put("schedule", schedule);
 		map.put("content", content);
+		map.put("url", url);
 		return map;
 	}
 
@@ -32,9 +30,8 @@ public class What extends models.What implements Indexable {
 		}
 
 		title = (String) map.get("title");
-		description = (String) map.get("description");
-		schedule = (String) map.get("schedule");
 		content = (String) map.get("content");
+		url = (String) map.get("url");
 		return this;
 	}
 

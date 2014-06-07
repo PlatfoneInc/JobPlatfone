@@ -2,21 +2,23 @@ package controllers;
 
 import indexing.Job;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import models.UserProfile;
+
+import org.apache.http.ParseException;
+import org.json.JSONException;
 
 import play.Logger;
+import play.cache.Cache;
+import play.libs.Json;
+import play.libs.WS.Response;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.github.cleverage.elasticsearch.IndexQuery;
-import com.github.cleverage.elasticsearch.IndexQueryPath;
-import com.github.cleverage.elasticsearch.IndexResults;
-import com.github.cleverage.elasticsearch.IndexService;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class Application extends Controller {
 
@@ -29,129 +31,236 @@ public class Application extends Controller {
 			// Json is not null and is not empty
 			// don't need to query again
 		} else {
-			results = getJobResults();
-			// JsonNode jn = Json.toJson(results);
-			// json = jn.toString();
-			// Gson gson = new Gson();
-			// json = gson.toJson(results);
-			// try {
-			// json = getSource(json);
-			// } catch (JSONException e) {
-			// e.printStackTrace();
-			// }
-			// Logger.debug(json);
+			results = JobSearcher.getJobResults();
 		}
-		// "[{\"id\":\"2\",\"what\":\"hh\"},{\"id\":\"0\",\"what\":\"yy\"}]"
 		return ok(views.html.index.render(results));
 	}
 
 	public static Result search(String who, String what, String where,
 			String when) {
 
-		// POST way to get parameters
-		// final Map<String, String[]> values = request().body()
-		// .asFormUrlEncoded();
-		// String who = values.get("who")[0];
-		// String what = values.get("what")[0];
-		// String where = values.get("where")[0];
-		// String when = values.get("when")[0];
-
-		List<Job> results = getJobResults(who, what, where, when);
-		// JsonNode jn = Json.toJson(results);
+		List<Job> results = JobSearcher.getJobResults(who, what, where, when);
 		return index(results);
 	}
 
-	private static List<Job> getJobResults() {
-		return getJobResults("", "", "", "");
+	public static Result login() {
+		return login(null);
 	}
 
-	private static List<Job> getJobResults(String who, String what,
-			String where, String when) {
-		List<Job> results = new ArrayList<Job>();
-
-		int pageNb = 0;
-		int pageCurrent = 0;
-		int from = 0;
-		int size = 10;
-
-		do {
-			// Query all this Model
-			IndexQuery<Job> indexQuery = new IndexQuery<Job>(Job.class).from(
-					from).size(size);
-			indexQuery.setBuilder(getQueryBuilder(who, what, where, when));
-			IndexQueryPath iqp = new IndexQueryPath(Job.TYPE);
-
-			// Query "string" for model IndexTest
-			IndexResults<Job> res = IndexService.search(iqp, indexQuery);
-			size = (int) res.pageSize;
-			pageNb = (int) res.pageNb;
-			pageCurrent = (int) res.pageCurrent;
-			results.addAll(res.results);
-
-			from += size;
-
-			// Logger.debug(Json.toJson(res).toString());
-			Logger.debug("size: " + size);
-			Logger.debug("pageNb: " + pageNb);
-			Logger.debug("pageCurrent: " + pageCurrent);
-		} while (pageCurrent < pageNb);
-
-		return results;
+	public static Result login(String message) {
+		return ok(views.html.login.render(message));
 	}
 
-	// private static JSONArray getSource(String results) throws JSONException {
-	// // Gson gson = new Gson();
-	// JSONArray sourceJsonArray = new JSONArray();
-	// JSONArray ja = new JSONArray(results);
-	// int len = ja.length();
-	// for (int i = 0; i < len; i++) {
-	// JSONObject jo = ja.getJSONObject(i);
-	// sourceJsonArray.put(jo.get(Job.KEY_JOB));
-	// }
-	// return sourceJsonArray;
-	// }
+	public static Result userProfile() {
+		if (session().containsKey("user_id")) {
+			String userId = session().get("user_id");
+			Logger.debug("user id: " + userId);
+			UserProfile userProfile = (UserProfile) Cache.get("linkedin.login."
+					+ userId);
 
-	private static QueryBuilder getQueryBuilder(String who, String what,
-			String where, String when) {
+			// TODO get UserProfile in DB
+			return ok(Json.toJson(userProfile));
+		} else {
+			return redirect(routes.Application.index());
+		}
+	}
 
-		BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+	public static Result linkedinProfile(String profileId) {
+		UserProfile userProfile = (UserProfile) Cache.get("linkedin.login."
+				+ profileId);
 
-		boolean hasWho = false;
-		boolean hasWhat = false;
-		boolean hasWhere = false;
-		boolean hasWhen = false;
+		// TODO parsing json has problem of null key
+		Logger.debug("profile id " + profileId);
 
-		if (who != null && !who.isEmpty()) {
-			QueryBuilder queryWho = QueryBuilders.fieldQuery("who.*", who);
-			boolQuery.must(queryWho);
-			hasWho = true;
+		String userId = userProfile.getId();
+		String userFirstName = userProfile.getFirstName();
+		String userPicture = userProfile.getPictureUrl();
+
+		session().clear();
+		session().put("user_id", userId);
+		session().put("user_first_name", userFirstName);
+		session().put("user_picture", userPicture);
+		return redirect(routes.Application.index());
+	}
+
+	public static Result linkedinLogin() {
+
+		String error = request().getQueryString("error");
+		String errorDescription = request().getQueryString("error_description");
+		String state = request().getQueryString("state");
+		String authorizationCode = request().getQueryString("code");
+
+		if (error != null && !error.isEmpty()) {
+			Logger.debug("error: " + errorDescription);
+			return redirect(routes.Application.login());
+		} else if (authorizationCode != null && !authorizationCode.isEmpty()) {
+			Logger.debug("state: " + state + ", auth code: "
+					+ authorizationCode);
+
+			// Comment linkedin try hardcode, OK
+			String accessUrl = LinkedInProcess
+					.getAccessTokenUrl(authorizationCode);
+			JsonNode profile = null;
+			try {
+				Logger.debug("access url: " + accessUrl);
+				Response response = LinkedInProcess
+						.getAccessTokenResponse(accessUrl);
+				JsonNode accessToken = response.asJson();
+				profile = LinkedInProcess.getUserProfileJson(accessToken.get(
+						"access_token").asText());
+
+				UserProfile userProfile = new UserProfile();
+				userProfile.setAccessToken(accessToken.get("access_token")
+						.asText());
+				userProfile.setExpiredAt((System.currentTimeMillis() / 1000)
+						+ accessToken.get("expires_in").asLong());
+				userProfile.setId(profile.get("id").asText());
+				userProfile.setFirstName(profile.get("firstName").asText());
+				userProfile.setLastName(profile.get("lastName").asText());
+				userProfile.setEmailAddress(profile.get("emailAddress")
+						.asText());
+				userProfile.setHeadline(profile.get("headline").asText());
+				userProfile.setPictureUrl(profile.get("pictureUrl").asText());
+				userProfile.setPublicProfileUrl(profile.get("publicProfileUrl")
+						.asText());
+				userProfile.setIndustry(profile.get("industry").asText());
+
+				Cache.set("linkedin.login." + profile.get("id").asText(),
+						userProfile);
+				// TODO store UserProfile to DB
+
+			} catch (ParseException e) {
+				Logger.error(e.getMessage());
+			} catch (JSONException e) {
+				Logger.error(e.getMessage());
+			} catch (IOException e) {
+				Logger.error(e.getMessage());
+			}
+			return redirect(routes.Application.linkedinProfile(profile
+					.get("id").asText()));
+		} else {
+			// TODO empty check
 		}
 
-		if (what != null && !what.isEmpty()) {
-			QueryBuilder queryWhat = QueryBuilders.fieldQuery("what.*", what);
-			boolQuery.must(queryWhat);
-			hasWhat = true;
+		return ok("How r u?");
+	}
+
+	public static Result authorization() {
+
+		Logger.info("Enter authorization");
+		// Form<Login> loginForm = play.data.Form.form(Login.class)
+		// .bindFromRequest();
+		//
+		// if (loginForm.hasErrors()) {
+		// return badRequest(views.html.login.render(loginForm));
+		// } else {
+		// session().clear();
+		// session("email", loginForm.get().email);
+		// return redirect(routes.Application.index());
+		// }
+
+		final Map<String, String[]> values = request().body()
+				.asFormUrlEncoded();
+		if (values != null && !values.isEmpty()) {
+			String requestType = values.get("request")[0];
+			Logger.debug("request type: " + requestType);
+			if (requestType.equals("linkedin")) {
+				Logger.debug("auth url: "
+						+ LinkedInProcess.getAuthrizationUrl());
+				return redirect(LinkedInProcess.getAuthrizationUrl());
+			} else if (requestType.equals("login")) {
+			}
+			return redirect(routes.Application.index());
+		} else {
+			Logger.debug("map null");
+			return redirect(routes.Application.login());
+		}
+	}
+
+	public static Result authorizationDialog() {
+		Logger.info("Enter authorization");
+		Logger.debug("auth url: " + LinkedInProcess.getAuthrizationUrl());
+		return ok(LinkedInProcess.getAuthrizationUrl());
+	}
+
+	public static Result linkedinProfileDialog(String profileId) {
+		UserProfile userProfile = (UserProfile) Cache.get("linkedin.login."
+				+ profileId);
+
+		// TODO parsing json has problem of null key
+		Logger.debug("profile id " + profileId);
+
+		String userId = userProfile.getId();
+		String userFirstName = userProfile.getFirstName();
+		String userPicture = userProfile.getPictureUrl();
+
+		session().clear();
+		session().put("user_id", userId);
+		session().put("user_first_name", userFirstName);
+		session().put("user_picture", userPicture);
+		return redirect(routes.Application.index());
+	}
+
+	public static Result linkedinLoginDialog() {
+
+		String error = request().getQueryString("error");
+		String errorDescription = request().getQueryString("error_description");
+		String state = request().getQueryString("state");
+		String authorizationCode = request().getQueryString("code");
+
+		if (error != null && !error.isEmpty()) {
+			Logger.debug("error: " + errorDescription);
+			return redirect(routes.Application.login());
+		} else if (authorizationCode != null && !authorizationCode.isEmpty()) {
+			Logger.debug("state: " + state + ", auth code: "
+					+ authorizationCode);
+
+			// Comment linkedin try hardcode, OK
+			String accessUrl = LinkedInProcess
+					.getAccessTokenUrl(authorizationCode);
+			JsonNode profile = null;
+			try {
+				Logger.debug("access url: " + accessUrl);
+				Response response = LinkedInProcess
+						.getAccessTokenResponse(accessUrl);
+				JsonNode accessToken = response.asJson();
+				profile = LinkedInProcess.getUserProfileJson(accessToken.get(
+						"access_token").asText());
+
+				UserProfile userProfile = new UserProfile();
+				userProfile.setAccessToken(accessToken.get("access_token")
+						.asText());
+				userProfile.setExpiredAt((System.currentTimeMillis() / 1000)
+						+ accessToken.get("expires_in").asLong());
+				userProfile.setId(profile.get("id").asText());
+				userProfile.setFirstName(profile.get("firstName").asText());
+				userProfile.setLastName(profile.get("lastName").asText());
+				userProfile.setEmailAddress(profile.get("emailAddress")
+						.asText());
+				userProfile.setHeadline(profile.get("headline").asText());
+				userProfile.setPictureUrl(profile.get("pictureUrl").asText());
+				userProfile.setPublicProfileUrl(profile.get("publicProfileUrl")
+						.asText());
+				userProfile.setIndustry(profile.get("industry").asText());
+
+				Cache.set("linkedin.login." + profile.get("id").asText(),
+						userProfile);
+				// TODO store UserProfile to DB
+
+			} catch (ParseException e) {
+				Logger.error(e.getMessage());
+			} catch (JSONException e) {
+				Logger.error(e.getMessage());
+			} catch (IOException e) {
+				Logger.error(e.getMessage());
+			}
+			return redirect(routes.Application.linkedinProfile(profile
+					.get("id").asText()));
+		} else {
+			// TODO empty check
 		}
 
-		if (where != null && !where.isEmpty()) {
-			QueryBuilder queryWhere = QueryBuilders
-					.fieldQuery("where.*", where);
-			boolQuery.must(queryWhere);
-			hasWhere = true;
-		}
-
-		if (when != null && !when.isEmpty()) {
-			QueryBuilder queryWhen = QueryBuilders.rangeQuery(Job.TIMESTAMP)
-					.from(when);
-			boolQuery.must(queryWhen);
-			hasWhen = true;
-		}
-
-		if (!(hasWho || hasWhat || hasWhere || hasWhen)) {
-			return QueryBuilders.matchAllQuery();
-		}
-
-		return boolQuery;
+		return ok("How r u?");
 	}
 
 }

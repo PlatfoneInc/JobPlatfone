@@ -1,63 +1,26 @@
 package models;
 
-public abstract class Job {
+public interface Job {
 	public static final String TYPE = "job_info";
 	public static final String TIMESTAMP = "timestamp";
 
-	private long id;
-	private Who who;
-	private What what;
-	private Where where;
-	private String timestamp;
-	
-	public Job() {
-	}
+	public String getId();
 
-	public Job(long id, Who who, What what, Where where, String timestamp) {
-		this.id = id;
-		this.who = who;
-		this.what = what;
-		this.where = where;
-		this.timestamp = timestamp;
-	}
+	public void setId(long id);
 
-	public String getId() {
-		return String.valueOf(id);
-	}
+	public Who getWho();
 
-	public void setId(long id) {
-		this.id = id;
-	}
+	public void setWho(Who who);
 
-	public Who getWho() {
-		return who;
-	}
+	public What getWhat();
 
-	public void setWho(Who who) {
-		this.who = who;
-	}
+	public void setWhat(What what);
 
-	public What getWhat() {
-		return what;
-	}
+	public Where getWhere();
 
-	public void setWhat(What what) {
-		this.what = what;
-	}
+	public void setWhere(Where where);
 
-	public Where getWhere() {
-		return where;
-	}
+	public String getTimestamp();
 
-	public void setWhere(Where where) {
-		this.where = where;
-	}
-
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+	public void setTimestamp(String timestamp);
 }

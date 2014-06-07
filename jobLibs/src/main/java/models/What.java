@@ -2,20 +2,21 @@ package models;
 
 public abstract class What {
 
+	public static final String TYPE = "what";
+
 	protected String title;
-	protected String description;
-	protected String schedule;
+	// protected String description;
+	// protected String schedule;
 	protected String content;
+	protected String url;
 
 	public What() {
 	}
 
-	public What(String title, String description, String schedule,
-			String content) {
+	public What(String title, String content, String url) {
 		this.title = title;
-		this.description = description;
-		this.schedule = schedule;
 		this.content = content;
+		this.url = url;
 	}
 
 	public String getTitle() {
@@ -26,28 +27,20 @@ public abstract class What {
 		this.title = title;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getSchedule() {
-		return schedule;
-	}
-
-	public void setSchedule(String schedule) {
-		this.schedule = schedule;
-	}
-
 	public String getContent() {
 		return content;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

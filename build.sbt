@@ -8,8 +8,9 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache,
-  "com.clever-age"          % "play2-elasticsearch"		% "0.8.2",
-  "com.google.code.gson"	% "gson"					% "2.2.4"
+  "com.clever-age"          %	"play2-elasticsearch"	%	"0.8.2",
+  "com.google.code.gson"	%	"gson"					%	"2.2.4",
+  "org.scribe"				%	"scribe"				%	"1.3.5"
 )
 
 play.Project.playJavaSettings

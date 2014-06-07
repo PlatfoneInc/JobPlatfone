@@ -1,18 +1,19 @@
 package models;
 
 public abstract class Who {
-	
+
+	public static final String TYPE = "who";
+
 	protected String company;
-	protected String description;
-	protected String url;
+	// protected String description;
 
 	public Who() {
 	}
 
-	public Who(String company, String description, String url) {
+	public Who(String company) {
 		this.company = company;
-		this.description = description;
-		this.url = url;
+		// this.description = description;
+//		this.url = url;
 	}
 
 	public String getCompany() {
@@ -23,19 +24,4 @@ public abstract class Who {
 		this.company = company;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 }

@@ -5,6 +5,18 @@
 # Home page
 GET     /							controllers.Application.index()
 GET		/search						controllers.Application.search(who, what, where, when)
+GET		/userprofile				controllers.Application.userProfile()
+
+# Login page
+GET		/login						controllers.Application.login()
+GET		/linkedin					controllers.Application.linkedinLogin()
+GET		/linkedinprofile			controllers.Application.linkedinProfile(profileId)
+POST	/authorization				controllers.Application.authorization()
+
+# Login dialog
+# GET		/linkedindialog					controllers.Application.linkedinLoginDialog()
+GET		/linkedinprofiledialog			controllers.Application.linkedinProfileDialog(profileId)
+POST	/authorizationdialog		controllers.Application.authorizationDialog()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

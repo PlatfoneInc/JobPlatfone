@@ -1,0 +1,34 @@
+<div class="navbar navbar-inverse">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target=".navbar-collapse">
+				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<!-- Suggest using class to have our logo and title -->
+			<a class="navbar-brand" href="">Platfone</a>
+		</div>
+		@login_dialog()
+		<div ng-controller="loginNavCtrl" class="navbar-collapse collapse navbar-responsive-collapse">
+			<ul class="nav navbar-nav pull-right">
+				<li class="">
+					<a id="dialog-login">Login(With Dialog)</a>
+				</li>
+				@if(play.mvc.Controller.session().containsKey("user_id")) {
+					<li class="">
+						<img class="featurette-image img-responsive" 
+							src="@play.mvc.Controller.session().get("user_picture")" 
+							alt="@play.mvc.Controller.session().get("user_last_name")">
+					</li>
+					<li class="">
+						<a href="@routes.Application.userProfile">Hi!
+							@play.mvc.Controller.session().get("user_first_name")</a>
+					</li> 
+				} else {
+					<li class=""><a href="@routes.Application.login">Login</a></li> 
+				}
+			</ul>
+		</div>
+	</div>
+</div>

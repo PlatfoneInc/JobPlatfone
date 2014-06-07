@@ -1,11 +1,13 @@
 package models;
 
 public abstract class Where {
+	
+	public static final String TYPE = "where";
 
 	protected String city;
 	protected String state;
 	protected String country;
-
+	
 	public Where() {
 	}
 

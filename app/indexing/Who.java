@@ -10,18 +10,14 @@ public class Who extends models.Who implements Indexable {
 	public Who() {
 	}
 
-	public Who(String company, String description, String url) {
+	public Who(String company) {
 		this.company = company;
-		this.description = description;
-		this.url = url;
 	}
  
 	@Override
 	public Map<String, Object> toIndex() {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("company", company);
-		map.put("description", description);
-		map.put("url", url);
 		return map;
 	}
 
@@ -32,8 +28,6 @@ public class Who extends models.Who implements Indexable {
 		}
 
 		company = (String) map.get("company");
-		description = (String) map.get("description");
-		url = (String) map.get("url");
 		return this;
 	}
 
