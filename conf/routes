@@ -14,8 +14,8 @@ GET		/linkedinprofile			controllers.Application.linkedinProfile(profileId)
 POST	/authorization				controllers.Application.authorization()
 
 # Login dialog
-# GET		/linkedindialog					controllers.Application.linkedinLoginDialog()
-GET		/linkedinprofiledialog			controllers.Application.linkedinProfileDialog(profileId)
+GET		/linkedindialog				controllers.Application.linkedinLoginDialog()
+GET		/linkedinprofiledialog		controllers.Application.linkedinProfileDialog(profileId)
 POST	/authorizationdialog		controllers.Application.authorizationDialog()
 
 # Map static resources from the /public folder to the /assets URL path

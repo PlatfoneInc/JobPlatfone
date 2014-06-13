@@ -13,7 +13,7 @@
 		<div ng-controller="loginNavCtrl" class="navbar-collapse collapse navbar-responsive-collapse">
 			<ul class="nav navbar-nav pull-right">
 				<li class="">
-					<a id="dialog-login">Login(With Dialog)</a>
+					<a id="dialog-login" ng-bind-html="loginInfo"></a>
 				</li>
 				@if(play.mvc.Controller.session().containsKey("user_id")) {
 					<li class="">

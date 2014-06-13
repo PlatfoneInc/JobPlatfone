@@ -247,6 +247,7 @@ public class Application extends Controller {
 						userProfile);
 				// TODO store UserProfile to DB
 
+				return ok(Json.toJson(userProfile));
 			} catch (ParseException e) {
 				Logger.error(e.getMessage());
 			} catch (JSONException e) {
@@ -254,8 +255,7 @@ public class Application extends Controller {
 			} catch (IOException e) {
 				Logger.error(e.getMessage());
 			}
-			return redirect(routes.Application.linkedinProfile(profile
-					.get("id").asText()));
+			return redirect(routes.Application.index());
 		} else {
 			// TODO empty check
 		}

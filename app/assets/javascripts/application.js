@@ -1,4 +1,4 @@
-var app = angular.module('jobPlatfone', []);
+var app = angular.module('jobPlatfone', ['ngCookies', 'ngSanitize', 'ngRoute']);
 
 //app.factory('myService', function($http) {
 //	var myService = {
@@ -20,29 +20,32 @@ var app = angular.module('jobPlatfone', []);
 //	return myService;
 //});
 
-//app.config(['$routeProvider', function($routeProvider) {
-//	$routeProvider.when('/linkedindialog', {
-//		// templateUrl : '',
-//		// controller : 'linkedinRedirect'
-//		redirectTo : function() {
-//			return data;
-//		}
-//	}).otherwise({
-//		redirectTo : '/'
+// app.config([ '$routeProvider', function($routeProvider) {
+//	return $routeProvider.when('/linkedindialog', {
+//		templateUrl : '/index',
+//		controller : 'linkedinRedirect'
 //	});
-//}]);
+//} ]);
 
-app.controller('loginNavCtrl', function($scope) {
-	
+app.controller('loginNavCtrl', function($scope, $cookieStore) {
+	console.log('loginNavCtrl');
+	var userId = $cookieStore.get('user_id'); 
+	if (typeof userId == undefined) {
+		console.log('userId: ' + userId);
+		$scope.loginInfo = $cookieStore.get('user_first_name');
+	} else {
+		$scope.loginInfo = 'Login(With Dialog)';
+	}
 });
 
-app.controller('linkedinRedirect', function($scope, $http) {
-	$http({
-		method : 'GET',
-		url : data
-	}).success(function(data, status, headers, config) {
-		
-	});
+app.controller('linkedinRedirect', function($scope, $routeParams) {
+	console.log($routeParams);
+	// $http({
+	// method : 'GET',
+	// url : data
+	// }).success(function(data, status, headers, config) {
+	//
+	// });
 });
 
 app.controller('loginDialogCtrl', function($scope, $http, $window) {

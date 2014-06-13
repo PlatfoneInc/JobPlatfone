@@ -2,36 +2,43 @@
 
 <!DOCTYPE html>
 
-<html>
+<html ng-app="jobPlatfone">
 	<head>
 		<title>@title</title>
-		
+
 		<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 
 		<!-- Bootstrap core CSS -->
 		<link href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.min.css")" rel="stylesheet">
 		<link href="@routes.Assets.at("stylesheets/main.css")" rel="stylesheet" >
-		<link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
-		
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+		<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
+
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-cookies.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>
+		<script src="@routes.Assets.at("javascripts/application.js")"></script>
+		<script src="@routes.Assets.at("javascripts/index.js")"></script>
+		<script src="@routes.Assets.at("javascripts/login.js")"></script>
 	</head>
 	<body>
+
+		@navbar()
+
 		<div id="top" class="container marketing">
 			@content
 		</div><!-- /.container -->
-
 
 		<!-- FOOTER -->
 		<footer>
 			<p>&copy; 2014 Platfone Inc.<!-- &middot; <a href="#">Privacy</a> --></p>
 		</footer>
 
-
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="@routes.Assets.at("javascripts/index.js")"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap/bootstrap.min.js")"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-transition.js")"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-alert.js")"></script>

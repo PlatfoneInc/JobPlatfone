@@ -24,71 +24,29 @@
 
 							<div class='row page-header'>
 								<h3 class="masthead-brand">
-									<a href="@job.jobs.getWho().getUrl()" class="cover-heading">
-										@job.jobs.getWhat().getTitle()
+									<a href="@job.getWhat().getUrl()" class="cover-heading">
+										@job.getWhat().getTitle()
 									</a>
 								</h3>
 							</div>
 
 							<div class='row'>
-								<!-- Making content for Who -->
-								<div class='col-md-3'>
-									<div class='row'>
-										<p class='label label-warning'> Who </p>
-									</div>
-									<div class='row'>
-										<h4>@job.jobs.getWho().getCompany()</h4>
-									</div>
-									<div class='row'>
-										<p>
-											@{
-												val str = job.jobs.getWho().getDescription()
-												val len = str.length
-												if (len > 80) {
-													str.substring(0, 80) + "..."
-												} else {
-													str
-												}
-											}
-										</p>
-									</div>
-								</div>
-
 								<div class='col-md-1'>
 								</div>
 
 								<!-- Making content for What -->
-								<div class='col-md-4'>
+								<div class='col-md-7'>
 									<div class='row'>
 										<div class='row'>
 											<p class='label label-warning'> What </p>
 										</div>
 										<div class='row'>
-											<p class='pull-left label label-default'> Description </p>
-										</div>
-										<div class='row'>
 											<p>
 												@{
-													val str = job.jobs.getWhat().getDescription()
+													val str = job.getWhat().getContent()
 													val len = str.length
-													if (len > 80) {
-														str.substring(0, 80) + "..."
-													} else {
-														str
-													}
-												}
-											</p>
-										</div>
-										<div class='row'>
-											<p class='pull-left label label-default'> Content </p>
-										</div>
-										<div class='row'>
-											<p>
-												@{
-													val str = job.jobs.getWhat().getContent()
-													val len = str.length
-													if (len > 80) {
-														str.substring(0, 80) + "..."
+													if (len > 150) {
+														str.substring(0, 150) + "..."
 													} else {
 														str
 													}
@@ -104,20 +62,26 @@
 								<!-- Making content for Where -->
 								<div class='col-md-3'>
 									<div class='row'>
+										<p class='label label-warning'> Who </p>
+									</div>
+									<div class='row'>
+										<h4>@job.getWho().getCompany()</h4>
+									</div>
+									<div class='row'>
 										<p class='label label-warning'> Where </p>
 									</div>
 									<div class='row'>
 										<p>
 											@{
-												job.jobs.getWhere().getCity() + ", " + 
-												job.jobs.getWhere().getState()
+												job.getWhere().getCity() + " " + 
+												job.getWhere().getState() + " " + 
+												job.getWhere().getCountry()
 											}
 										</p>
-										<p>@job.jobs.getWhere().getCountry()</p>
 									</div>
 
 									<!-- Making content for When -->
-									<p class='label label-danger'>@job.jobs.getTimestamp()</p>
+									<p class='label label-danger'>@job.getTimestamp()</p>
 								</div>
 							</div>
 
@@ -140,7 +104,5 @@
 		var jobs_json = $('<div/>').html('@jobs').text();
 	</script>
 	-->
-
-	<hr class="featurette-divider">
 
 }
