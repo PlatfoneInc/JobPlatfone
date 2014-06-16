@@ -3,20 +3,23 @@
 # ~~~~
 
 # Home page
-GET     /							controllers.Application.index()
-GET		/search						controllers.Application.search(who, what, where, when)
-GET		/userprofile				controllers.Application.userProfile()
+GET     /							controllers.Application.index(any = "none")
+# GET		/search						controllers.Application.search(who, what, where, when)
+# GET		/userprofile				controllers.Application.userProfile()
 
 # Login page
-GET		/login						controllers.Application.login()
-GET		/linkedin					controllers.Application.linkedinLogin()
-GET		/linkedinprofile			controllers.Application.linkedinProfile(profileId)
-POST	/authorization				controllers.Application.authorization()
+GET		/linkedin						controllers.LinkedIn.linkedinLogin()
+POST	/authorization					controllers.LinkedIn.authorization()
 
-# Login dialog
-GET		/linkedindialog				controllers.Application.linkedinLoginDialog()
-GET		/linkedinprofiledialog		controllers.Application.linkedinProfileDialog(profileId)
-POST	/authorizationdialog		controllers.Application.authorizationDialog()
+# Play routes serving JSON to AngularJS start with /api
+GET		/api/jobs  	        		controllers.JobSearcher.index() 
+GET		/api/profile/:profileId		controllers.LinkedIn.linkedinProfile(profileId: String)
+
+# Play routes serving HTML to AngularJS start with /views
+GET     /views/*any                 controllers.Application.loadHTML(any)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Redirect all unknown routes to the index page
+GET     /*any						controllers.Application.index(any)

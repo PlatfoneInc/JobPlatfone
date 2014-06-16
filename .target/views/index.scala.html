@@ -1,108 +1,57 @@
-@(jobs: List[indexing.Job])
+<div id="job-info">
+	<!-- Making content for Who -->
+	<div class="site-wrapper" ng-repeat="job in jobs">
+		<div class="site-wrapper-inner">
+			<div class="cover-container">
+				<div class="inner cover">
 
-@main("Job Platfone") {
+					<div class='row page-header'>
+						<h3 class="masthead-brand">
+							<a href="{{job.what.url}}" target="_blank" class="cover-heading">
+								{{job.what.title}} </a>
+						</h3>
+					</div>
 
-	<h1>Job Platfone</h1>
+					<div class='row'>
+						<div class='col-md-1'></div>
 
-	<form class="form-wrapper cf" action="/search" method="get" style="margin-top: 40px;">
-		<input id="who" name="who" type="text" placeholder="Who : company">
-		<input id="what" name="what" type="text" placeholder="What : content">
-		<input id="where" name="where" type="text" placeholder="Where : place">
-		<input id="datepicker" name="when" type="text" placeholder="When : date">
-		<button type="submit">Search</button>
-	</form>
-
-	<div id="job-info">
-
-		@for(job <- jobs) {
-
-			<!-- Making content for Who -->
-			<div class="site-wrapper">
-				<div class="site-wrapper-inner">
-					<div class="cover-container">
-						<div class="inner cover">
-
-							<div class='row page-header'>
-								<h3 class="masthead-brand">
-									<a href="@job.getWhat().getUrl()" class="cover-heading">
-										@job.getWhat().getTitle()
-									</a>
-								</h3>
-							</div>
-
+						<!-- Making content for What -->
+						<div class='col-md-7'>
 							<div class='row'>
-								<div class='col-md-1'>
+								<div class='row'>
+									<p class='label label-warning'>What</p>
 								</div>
-
-								<!-- Making content for What -->
-								<div class='col-md-7'>
-									<div class='row'>
-										<div class='row'>
-											<p class='label label-warning'> What </p>
-										</div>
-										<div class='row'>
-											<p>
-												@{
-													val str = job.getWhat().getContent()
-													val len = str.length
-													if (len > 150) {
-														str.substring(0, 150) + "..."
-													} else {
-														str
-													}
-												}
-											</p>
-										</div>
-									</div>
-								</div>
-
-								<div class='col-md-1'>
-								</div>
-
-								<!-- Making content for Where -->
-								<div class='col-md-3'>
-									<div class='row'>
-										<p class='label label-warning'> Who </p>
-									</div>
-									<div class='row'>
-										<h4>@job.getWho().getCompany()</h4>
-									</div>
-									<div class='row'>
-										<p class='label label-warning'> Where </p>
-									</div>
-									<div class='row'>
-										<p>
-											@{
-												job.getWhere().getCity() + " " + 
-												job.getWhere().getState() + " " + 
-												job.getWhere().getCountry()
-											}
-										</p>
-									</div>
-
-									<!-- Making content for When -->
-									<p class='label label-danger'>@job.getTimestamp()</p>
+								<div class='row'>
+									<jobContent>{{job.what.content}}</jobContent>
 								</div>
 							</div>
+						</div>
 
+						<div class='col-md-1'></div>
+
+						<!-- Making content for Where -->
+						<div class='col-md-3'>
+							<div class='row'>
+								<p class='label label-warning'>Who</p>
+							</div>
+							<div class='row'>
+								<h4>{{job.who.company}}</h4>
+							</div>
+							<div class='row'>
+								<p class='label label-warning'>Where</p>
+							</div>
+							<div class='row'>
+								<p>{{job.where.city}}, {{job.where.state}},
+									{{job.where.country}}</p>
+							</div>
+
+							<!-- Making content for When -->
+							<p class='label label-danger'>{{job.timestamp}}</p>
 						</div>
 					</div>
+
 				</div>
 			</div>
-
-		}
+		</div>
 	</div>
-
-	<!--
-	<script>
-		function htmlEncode(value) {
-			//create a in-memory div, set it's inner text(which jQuery automatically encodes)
-			//then grab the encoded contents back out.  The div never exists on the page.
-			return $('<div/>').text(value).html();
-		}
-
-		var jobs_json = $('<div/>').html('@jobs').text();
-	</script>
-	-->
-
-}
+</div>

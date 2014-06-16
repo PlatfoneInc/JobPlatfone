@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)
 
 <!DOCTYPE html>
 
@@ -17,6 +17,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-cookies.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-resource.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>
 		<script src="@routes.Assets.at("javascripts/application.js")"></script>
@@ -27,10 +28,23 @@
 
 		@navbar()
 
-		<div id="top" class="container marketing">
-			@content
-		</div><!-- /.container -->
+		<div class="container marketing">
+			<h1>Job Platfone</h1>
+			
+			<form class="form-wrapper cf" action="/search" method="get"
+				style="margin-top: 40px;">
+				<input id="who" name="who" type="text" placeholder="Who : company">
+				<input id="what" name="what" type="text" placeholder="What : content">
+				<input id="where" name="where" type="text" placeholder="Where : place">
+				<input id="datepicker" name="when" type="text"
+					placeholder="When : date">
+				<button type="submit">Search</button>
+			</form>
 
+			<div id="top"  ng-view>
+			</div><!-- /.container -->
+		</div>
+		
 		<!-- FOOTER -->
 		<footer>
 			<p>&copy; 2014 Platfone Inc.<!-- &middot; <a href="#">Privacy</a> --></p>

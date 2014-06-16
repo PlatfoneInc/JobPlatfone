@@ -15,19 +15,6 @@
 				<li class="">
 					<a id="dialog-login" ng-bind-html="loginInfo"></a>
 				</li>
-				@if(play.mvc.Controller.session().containsKey("user_id")) {
-					<li class="">
-						<img class="featurette-image img-responsive" 
-							src="@play.mvc.Controller.session().get("user_picture")" 
-							alt="@play.mvc.Controller.session().get("user_last_name")">
-					</li>
-					<li class="">
-						<a href="@routes.Application.userProfile">Hi!
-							@play.mvc.Controller.session().get("user_first_name")</a>
-					</li> 
-				} else {
-					<li class=""><a href="@routes.Application.login">Login</a></li> 
-				}
 			</ul>
 		</div>
 	</div>

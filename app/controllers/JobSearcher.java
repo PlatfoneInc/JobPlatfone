@@ -10,14 +10,19 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import play.Logger;
+import play.libs.Json;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 import com.github.cleverage.elasticsearch.IndexQuery;
 import com.github.cleverage.elasticsearch.IndexQueryPath;
 import com.github.cleverage.elasticsearch.IndexResults;
 import com.github.cleverage.elasticsearch.IndexService;
 
-class JobSearcher {
-	JobSearcher() {
+public class JobSearcher extends Controller {
+
+	public static Result index() {
+		return ok(Json.toJson(getJobResults()));
 	}
 
 	static List<Job> getJobResults() {
@@ -34,25 +39,25 @@ class JobSearcher {
 		int size = 10;
 
 		// do {
-			// Query all this Model
-			IndexQuery<Job> indexQuery = new IndexQuery<Job>(Job.class).from(
-					from).size(size);
-			indexQuery.setBuilder(getQueryBuilder(who, what, where, when));
-			IndexQueryPath iqp = new IndexQueryPath(Job.TYPE);
+		// Query all this Model
+		IndexQuery<Job> indexQuery = new IndexQuery<Job>(Job.class).from(from)
+				.size(size);
+		indexQuery.setBuilder(getQueryBuilder(who, what, where, when));
+		IndexQueryPath iqp = new IndexQueryPath(Job.TYPE);
 
-			// Query "string" for model IndexTest
-			IndexResults<Job> res = IndexService.search(iqp, indexQuery);
-			size = (int) res.pageSize;
-			pageNb = (int) res.pageNb;
-			pageCurrent = (int) res.pageCurrent;
-			results.addAll(res.results);
+		// Query "string" for model IndexTest
+		IndexResults<Job> res = IndexService.search(iqp, indexQuery);
+		size = (int) res.pageSize;
+		pageNb = (int) res.pageNb;
+		pageCurrent = (int) res.pageCurrent;
+		results.addAll(res.results);
 
-			from += size;
+		from += size;
 
-			// Logger.debug(Json.toJson(res).toString());
-			Logger.debug("size: " + size);
-			Logger.debug("pageNb: " + pageNb);
-			Logger.debug("pageCurrent: " + pageCurrent);
+		// Logger.debug(Json.toJson(res).toString());
+		Logger.debug("size: " + size);
+		Logger.debug("pageNb: " + pageNb);
+		Logger.debug("pageCurrent: " + pageCurrent);
 		// } while (pageCurrent < pageNb);
 
 		return results;

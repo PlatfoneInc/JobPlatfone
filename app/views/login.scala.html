@@ -1,35 +1,34 @@
-@(message: String)
+<h1>Welcome</h1>
+<div class='row'>
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<form role="form" method="post"
+			action="@routes.LinkedIn.authorization">
+			<div class="form-group">
+				<label for="userEmail">Email address</label> <input type="email"
+					class="form-control" name="userEmail" placeholder="Enter email">
+			</div>
+			<div class="form-group">
+				<label for="passwd">Password</label> <input type="password"
+					class="form-control" name="passwd" placeholder="Password">
+			</div>
+			<input type="hidden" id="request" name="request" value="login">
+			<div class='row'>
+				<div class="col-md-3"></div>
+				<div class="col-md-3">
+					<button onclick="setLoginType('linkedin')" type="submit"
+						class="btn btn-primary">
+						Sign in with <span class="">LinkedIn</span>
+					</button>
+				</div>
 
-@main("Login") {
-	<h1>Welcome</h1>
-	<div class='row'>
-		<div class="col-md-3"></div>
-		<div class="col-md-6">
-			<form role="form" method="post" action="@routes.Application.authorization">
-				<div class="form-group">
-					<label for="userEmail">Email address</label>
-					<input type="email"
-						class="form-control" name="userEmail" placeholder="Enter email">
+				<div class="col-md-3">
+					<button onclick="setLoginType('login')" type="submit"
+						class="btn btn-default">Login</button>
 				</div>
-				<div class="form-group">
-					<label for="passwd">Password</label>
-					<input type="password"
-						class="form-control" name="passwd" placeholder="Password">
-				</div>
-				<input type="hidden" id="request" name="request" value="login">
-				<div class='row'>
-					<div class="col-md-3"></div>
-					<div class="col-md-3">
-						<button onclick="setLoginType('linkedin')" type="submit" class="btn btn-primary">Sign in with <span class="">LinkedIn</span></button>
-					</div>
-
-					<div class="col-md-3">
-						<button onclick="setLoginType('login')" type="submit" class="btn btn-default">Login</button>
-					</div>
-					<div class="col-md-3"></div>
-				</div>
-			</form>
-		</div>
-		<div class="col-md-3"></div>
+				<div class="col-md-3"></div>
+			</div>
+		</form>
 	</div>
-}
+	<div class="col-md-3"></div>
+</div>
